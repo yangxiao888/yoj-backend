@@ -1,7 +1,6 @@
 package com.yuoj.service.impl;
 
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,7 +15,6 @@ import com.yuoj.model.entity.User;
 import com.yuoj.model.enums.QuestionSubmitLanguageEnum;
 import com.yuoj.model.enums.QuestionSubmitStatusEnum;
 import com.yuoj.model.vo.QuestionSubmitVO;
-import com.yuoj.model.vo.QuestionVO;
 import com.yuoj.service.QuestionService;
 import com.yuoj.service.QuestionSubmitService;
 import com.yuoj.mapper.QuestionSubmitMapper;
@@ -29,10 +27,7 @@ import org.springframework.util.CollectionUtils;
 
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -129,11 +124,13 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
     @Override
     public Page<QuestionSubmitVO> getQuestionSubmitVOPage(Page<QuestionSubmit> questionSubmitPage, User loginUser) {
+        //获取分页数据
         List<QuestionSubmit> questionSubmitList = questionSubmitPage.getRecords();
         Page<QuestionSubmitVO> questionSubmitVOPage = new Page<>(questionSubmitPage.getCurrent(), questionSubmitPage.getSize(), questionSubmitPage.getTotal());
         if (CollectionUtils.isEmpty(questionSubmitList)) {
             return questionSubmitVOPage;
         }
+        //逐个进行判断脱敏
         List<QuestionSubmitVO> questionSubmitVOList = questionSubmitList.stream()
                 .map(questionSubmit -> getQuestionSubmitVO(questionSubmit, loginUser))
                 .collect(Collectors.toList());

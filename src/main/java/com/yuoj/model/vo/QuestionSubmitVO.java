@@ -67,10 +67,6 @@ public class QuestionSubmitVO implements Serializable {
      */
     private Date updateTime;
 
-    /**
-     * 是否删除
-     */
-    private Integer isDelete;
 
     /**
      * 包装类转对象

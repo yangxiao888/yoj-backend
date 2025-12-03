@@ -1,46 +1,43 @@
-package com.yuoj.judge.strategy.impl;
+package com.yuoj.judge.responseJudgeStartegy;
 
 import cn.hutool.json.JSONUtil;
-import com.yuoj.judge.strategy.JudgeContext;
-import com.yuoj.judge.strategy.JudgeStrategy;
+import com.yuoj.judge.codesandbox.model.JudgeInfo;
 import com.yuoj.model.dto.question.JudgeCase;
 import com.yuoj.model.dto.question.JudgeConfig;
-import com.yuoj.model.dto.questionsubmit.JudgeInfo;
 import com.yuoj.model.entity.Question;
 import com.yuoj.model.enums.JudgeInfoMessageEnum;
 
+
 import java.util.List;
+import java.util.Optional;
 
 /**
- * 默认判断逻辑
+ * Java 判题策略(假设编译需要10秒种，需要减去这个编译的时间)
  */
-public class DefaultJudgeStrategy implements JudgeStrategy {
+public class JavaJudgeStrategy implements JudgeStrategy{
     @Override
     public JudgeInfo doJudge(JudgeContext judgeContext) {
-        JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
         List<String> inputList = judgeContext.getInputList();
-        List<String> outputList = judgeContext.getOutputList();
         List<JudgeCase> judgeCaseList = judgeContext.getJudgeCaseList();
         Question question = judgeContext.getQuestion();
-        Long memory = judgeInfo.getMemory();
-        Long time = judgeInfo.getTime();
+        List<String> outputList = judgeContext.getOutputList();
+        JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
+        Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
 
         //返回类
         JudgeInfo judgeInfoResponse = new JudgeInfo();
-        judgeInfoResponse.setMemory(memory);
-        judgeInfoResponse.setTime(time);
-
 
         JudgeInfoMessageEnum judgeInfoMessage = JudgeInfoMessageEnum.ACCEPTED;
         //判断输入输出用例数量是否一致
-        if (outputList.size() != inputList.size()) {
+        if(outputList.size() != inputList.size()){
             judgeInfoMessage = JudgeInfoMessageEnum.WRONG_ANSWER;
             judgeInfoResponse.setMessage(judgeInfoMessage.toString());
             return judgeInfoResponse;
         }
         //判断输入用例与理想输出用例是否相等
         for (int i = 0; i < outputList.size(); i++) {
-            if (!outputList.get(i).equals(judgeCaseList.get(i).getOutput())) {
+            if(!outputList.get(i).equals(judgeCaseList.get(i).getOutput())){
                 judgeInfoMessage = JudgeInfoMessageEnum.WRONG_ANSWER;
                 judgeInfoResponse.setMessage(judgeInfoMessage.toString());
                 return judgeInfoResponse;
@@ -51,18 +48,21 @@ public class DefaultJudgeStrategy implements JudgeStrategy {
         JudgeConfig neddJudgeConfig = JSONUtil.toBean(judgeConfig, JudgeConfig.class);
         Long needMemory = neddJudgeConfig.getMemoryLimit();
         Long needTime = neddJudgeConfig.getTimeLimit();
-        if (memory > needMemory) {
+        Long JAVA_TIME_COST = 1000L;
+        if((memory - JAVA_TIME_COST) >needMemory){
             judgeInfoMessage = JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessage.toString());
             return judgeInfoResponse;
         }
-        if (time > needTime) {
+        if(time > needTime){
             judgeInfoMessage = JudgeInfoMessageEnum.TIME_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessage.toString());
             return judgeInfoResponse;
         }
 
         judgeInfoResponse.setMessage(judgeInfoMessage.toString());
+        judgeInfoResponse.setMemory(memory);
+        judgeInfoResponse.setTime(time);
         return judgeInfoResponse;
     }
 }

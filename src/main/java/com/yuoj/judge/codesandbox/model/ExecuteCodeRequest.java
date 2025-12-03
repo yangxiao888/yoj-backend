@@ -7,29 +7,27 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * 代码沙箱请求类
- */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExecuteCodeRequest {
-
     /**
      * 代码
      */
-
     private String code;
 
+    /**
+     * 语言
+     */
+    private String language;
 
     /**
-     * 输入
+     * 输入参数
+     *
      */
     private List<String> inputList;
 
-    /**
-     * 编程语言
-     */
-    private String language;
+
+
 }

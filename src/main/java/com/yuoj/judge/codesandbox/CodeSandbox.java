@@ -1,5 +1,6 @@
 package com.yuoj.judge.codesandbox;
 
+
 import com.yuoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.yuoj.judge.codesandbox.model.ExecuteCodeResponse;
 
@@ -13,5 +14,5 @@ public interface CodeSandbox {
      * @param request 判题参数
      * @return 判题结果
      */
-    ExecuteCodeResponse executeCode(ExecuteCodeRequest request);
+     ExecuteCodeResponse executeCode(ExecuteCodeRequest request);
 }

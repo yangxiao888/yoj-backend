@@ -1,29 +1,28 @@
 package com.yuoj.judge.codesandbox.model;
 
-import com.yuoj.model.dto.questionsubmit.JudgeInfo;
 import lombok.Data;
 
 import java.util.List;
 
-/**
- * 代码沙箱返回类
- */
 @Data
 public class ExecuteCodeResponse {
 
     /**
-     * 状态
+     * 接口错误信息
+     */
+    private String message;
+    /**
+     * 执行状态
      */
     private Integer status;
 
     /**
-     * 输出
+     * 执行结果
      */
     private List<String> outputList;
 
     /**
-     * 判断对象
+     * 执行状态
      */
     private JudgeInfo judgeInfo;
-
 }

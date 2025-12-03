@@ -1,21 +1,21 @@
-package com.yuoj.judge.strategy.impl;
+package com.yuoj.judge.responseJudgeStartegy;
 
 import cn.hutool.json.JSONUtil;
-import com.yuoj.judge.strategy.JudgeContext;
-import com.yuoj.judge.strategy.JudgeStrategy;
+
+import com.yuoj.judge.codesandbox.model.JudgeInfo;
 import com.yuoj.model.dto.question.JudgeCase;
 import com.yuoj.model.dto.question.JudgeConfig;
-import com.yuoj.model.dto.questionsubmit.JudgeInfo;
 import com.yuoj.model.entity.Question;
 import com.yuoj.model.enums.JudgeInfoMessageEnum;
 
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Java 判题策略(假设编译需要10秒种，需要减去这个编译的时间)
+ * 默认判题策略
  */
-public class JavaJudgeStrategy implements JudgeStrategy {
+public class DefaultJudgeStrategy implements JudgeStrategy{
     @Override
     public JudgeInfo doJudge(JudgeContext judgeContext) {
         List<String> inputList = judgeContext.getInputList();
@@ -23,15 +23,11 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         Question question = judgeContext.getQuestion();
         List<String> outputList = judgeContext.getOutputList();
         JudgeInfo judgeInfo = judgeContext.getJudgeInfo();
-        Long memory = judgeInfo.getMemory();
-        Long time = judgeInfo.getTime();
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
+        Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
 
         //返回类
         JudgeInfo judgeInfoResponse = new JudgeInfo();
-        judgeInfoResponse.setMemory(memory);
-        judgeInfoResponse.setTime(time);
-        
-
 
         JudgeInfoMessageEnum judgeInfoMessage = JudgeInfoMessageEnum.ACCEPTED;
         //判断输入输出用例数量是否一致
@@ -53,8 +49,7 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         JudgeConfig neddJudgeConfig = JSONUtil.toBean(judgeConfig, JudgeConfig.class);
         Long needMemory = neddJudgeConfig.getMemoryLimit();
         Long needTime = neddJudgeConfig.getTimeLimit();
-        Long JAVA_TIME_COST = 10000L;
-        if((memory - JAVA_TIME_COST) >needMemory){
+        if(memory >needMemory){
             judgeInfoMessage = JudgeInfoMessageEnum.MEMORY_LIMIT_EXCEEDED;
             judgeInfoResponse.setMessage(judgeInfoMessage.toString());
             return judgeInfoResponse;
@@ -66,6 +61,8 @@ public class JavaJudgeStrategy implements JudgeStrategy {
         }
 
         judgeInfoResponse.setMessage(judgeInfoMessage.toString());
+        judgeInfoResponse.setMemory(memory);
+        judgeInfoResponse.setTime(time);
         return judgeInfoResponse;
     }
 }

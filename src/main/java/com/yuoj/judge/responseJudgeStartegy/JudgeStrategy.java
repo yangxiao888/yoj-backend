@@ -1,14 +1,12 @@
-package com.yuoj.judge.strategy;
+package com.yuoj.judge.responseJudgeStartegy;
 
-import com.yuoj.model.dto.questionsubmit.JudgeInfo;
 
-/**
- * 结果判断策略接口
- */
+import com.yuoj.judge.codesandbox.model.JudgeInfo;
+
 public interface JudgeStrategy {
 
     /**
-     * 执行判断
+     * 执行判题
      *
      * @param judgeContext
      * @return

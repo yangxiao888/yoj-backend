@@ -1,24 +1,26 @@
 package com.yuoj.judge.codesandbox.impl;
 
+
+
 import com.yuoj.judge.codesandbox.CodeSandbox;
 import com.yuoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.yuoj.judge.codesandbox.model.ExecuteCodeResponse;
-import com.yuoj.model.dto.questionsubmit.JudgeInfo;
+import com.yuoj.judge.codesandbox.model.JudgeInfo;
 import com.yuoj.model.enums.JudgeInfoMessageEnum;
 import com.yuoj.model.enums.QuestionSubmitStatusEnum;
 
 import java.util.List;
 
-
 /**
- * 示例代码沙箱实现类
+ * 示例代码沙箱
  */
-public class ExampleCodeSandboxImpl implements CodeSandbox {
+public class ExampleCodeSandbox implements CodeSandbox {
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest request) {
         List<String> inputList = request.getInputList();
         ExecuteCodeResponse executeCodeResponse = new ExecuteCodeResponse();
 
+        executeCodeResponse.setMessage("示例代码沙箱运行成功");
         executeCodeResponse.setOutputList(inputList);
         executeCodeResponse.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
         JudgeInfo judgeInfo = new JudgeInfo();
@@ -28,6 +30,5 @@ public class ExampleCodeSandboxImpl implements CodeSandbox {
         executeCodeResponse.setJudgeInfo(judgeInfo);
 
         return executeCodeResponse;
-
     }
 }

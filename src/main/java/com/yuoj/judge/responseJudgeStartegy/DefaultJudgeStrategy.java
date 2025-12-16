@@ -30,7 +30,7 @@ public class DefaultJudgeStrategy implements JudgeStrategy{
         JudgeInfo judgeInfoResponse = new JudgeInfo();
 
         JudgeInfoMessageEnum judgeInfoMessage = JudgeInfoMessageEnum.ACCEPTED;
-        //判断输入输出用例数量是否一致
+        //判断输入输出用例数量是否一致（代码沙箱里已进行判断）
         if(outputList.size() != inputList.size()){
             judgeInfoMessage = JudgeInfoMessageEnum.WRONG_ANSWER;
             judgeInfoResponse.setMessage(judgeInfoMessage.toString());

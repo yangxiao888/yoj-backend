@@ -30,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -82,10 +83,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"题目提交失败");
         }
 
-        //todo 判题服务
-        QuestionSubmit questionSubmit1 = judgeService.doJudge(questionSubmit.getId());
+        //todo 异步调用判题服务
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmit.getId());
+        });
 
-        return questionSubmit1.getId();
+        return questionSubmit.getId();
     }
 
 
